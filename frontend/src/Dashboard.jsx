@@ -2,6 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
@@ -252,7 +253,14 @@ function Dashboard() {
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.price}</TableCell>
                 <TableCell>{row.stock}</TableCell>
-                <TableCell>{row.action}</TableCell>
+                <TableCell>
+                  <Button
+                    color="error"
+                    size="small"
+                  >
+                    Eliminar
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
