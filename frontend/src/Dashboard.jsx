@@ -16,6 +16,12 @@ import {
   BarElement,
   Title,
 } from 'chart.js';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 ChartJS.register(
   ArcElement,
@@ -76,6 +82,16 @@ const barData = {
   ],
 };
 
+// Datos para la tabla de productos
+const productRows = [
+  { id: '001', name: 'Karategui', price: 499.99, stock: 50, action: 'Eliminar' },
+];
+
+// Datos para la tabla de clientes
+const clientRows = [
+  { id: '001', name: 'Erwin', lastname: 'Vásquez', nit: 'C/F', age: 23 },
+];
+
 function Dashboard() {
   return (
     <Box
@@ -92,11 +108,13 @@ function Dashboard() {
         maxWidth: '1400px',
         margin: '0 auto',
         boxShadow: 3,
-        borderRadius: 2
+        borderRadius: 2,
       }}
     >
       {/* Título principal */}
-      <h2>Cobra Kai - Dashboard</h2>
+      <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+        Cobra Kai - Dashboard
+      </Typography>
 
       {/* Contenedor de tarjetas */}
       <Box
@@ -211,6 +229,64 @@ function Dashboard() {
         </Typography>
         <Bar data={barData} options={chartOptions} />
       </Paper>
+
+      {/* Tabla de Productos */}
+      <Typography variant="h5" sx={{ marginTop: 4, fontWeight: 'bold' }}>
+        Productos
+      </Typography>
+      <TableContainer component={Paper} sx={{ marginTop: 2, width: '90%' }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Nombre</TableCell>
+              <TableCell>Precio</TableCell>
+              <TableCell>Stock</TableCell>
+              <TableCell>Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {productRows.map((row) => (
+              <TableRow key={row.id}>
+                <TableCell>{row.id}</TableCell>
+                <TableCell>{row.name}</TableCell>
+                <TableCell>{row.price}</TableCell>
+                <TableCell>{row.stock}</TableCell>
+                <TableCell>{row.action}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {/* Tabla de Clientes */}
+      <Typography variant="h5" sx={{ marginTop: 4, fontWeight: 'bold' }}>
+        Clientes
+      </Typography>
+      <TableContainer component={Paper} sx={{ marginTop: 2, width: '90%' }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Nombre</TableCell>
+              <TableCell>Apellido</TableCell>
+              <TableCell>NIT</TableCell>
+              <TableCell>Edad</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {clientRows.map((row) => (
+              <TableRow key={row.id}>
+                <TableCell>{row.id}</TableCell>
+                <TableCell>{row.name}</TableCell>
+                <TableCell>{row.lastname}</TableCell>
+                <TableCell>{row.nit}</TableCell>
+                <TableCell>{row.age}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 }
