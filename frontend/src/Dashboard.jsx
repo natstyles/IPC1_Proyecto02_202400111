@@ -83,17 +83,97 @@ const barData = {
   ],
 };
 
-// Datos para la tabla de productos
-const productRows = [
-  { id: '001', name: 'Karategui', price: 499.99, stock: 50, action: 'Eliminar' },
-];
+
 
 // Datos para la tabla de clientes
-const clientRows = [
-  { id: '001', name: 'Erwin', lastname: 'Vásquez', nit: 'C/F', age: 23 },
-];
+const clientRows = [];
 
 function Dashboard() {
+
+  // Datos para la tabla de productos
+  const[productRows, setProductRows] = React.useState([]); 
+
+  //FUNCIÓN PARA LLAMAR DATOS DE LA TABLA DE PRODUCTOS
+  function callProducts(){
+    //LLAMAR A LOS PRODUCTOS PARA MOSTRARLOS EN LA TABLA
+    fetch('http://localhost:3000/getProducts', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('GETPRODUCS:', data);
+      setProductRows(data);
+
+      
+    })
+    console.log('Productossss', productRows);
+  }
+
+  //MOSTRANDO EN CONSOLA LOS VALORES QUE TIENE EL FORM DE PRODUCTOS
+  const handleSubmitCreateProduct = (e) => {
+    e.preventDefault();
+    try{
+      const jsonObject = JSON.parse(e.target[0].value);
+
+      console.log(jsonObject);
+
+      fetch('http://localhost:3000/createProduct', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonObject),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+
+      //LLAMANDO A LOS PRODUCTOS PARA MOSTRARLOS EN LA TABKLA
+      callProducts();
+
+      
+
+    }catch(e){
+      console.log(e);
+    } 
+  }
+
+  //MOSTRANDO EN CONSLA LOS VALOES QUE TIENE EL FORM DE CLIENTES
+  const handleSubmitCreateClient = (e) => {
+    e.preventDefault();
+    try{
+      const jsonObject = JSON.parse(e.target[0].value);
+
+      console.log(jsonObject);
+
+      fetch('http://localhost:3000/createClient', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonObject),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+      
+    }catch(e){
+      console.log(e);
+    } 
+  }
+  
+  
   return (
     <Box
       sx={{
@@ -127,39 +207,43 @@ function Dashboard() {
         }}
       >
         {/* Tarjeta Crear Producto */}
-        <Paper
-          elevation={3}
-          sx={{
-            padding: 2,
-            width: 300,
-            textAlign: 'center',
-            backgroundColor: '#ffffff',
-            borderRadius: 2,
-          }}
-        >
-          <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
-            Crear producto
-          </Typography>
-          <TextField
-            id="filled-multiline-static"
-            label="Multiline"
-            multiline
-            rows={6}
-            defaultValue='{"id_producto": "001", "nombre_producto": "Karategui", "precio_producto": 499.99, "stock_producto": 100}'
-            variant="filled"
-            fullWidth
-          />
-          <IconButton
-            color="primary"
-            aria-label="Añadir Producto"
-            size="large"
-            sx={{ marginTop: 2 }}
+        <form onSubmit={handleSubmitCreateProduct} method="post">
+          <Paper
+            elevation={3}
+            sx={{
+              padding: 2,
+              width: 300,
+              textAlign: 'center',
+              backgroundColor: '#ffffff',
+              borderRadius: 2,
+            }}
           >
-            <AddCircleRoundedIcon fontSize="inherit" />
-          </IconButton>
-        </Paper>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
+              Crear producto
+            </Typography>
+            <TextField
+              id="filled-multiline-static"
+              label="Productos en formato JSON"
+              multiline
+              rows={6}
+              defaultValue='{"id_producto": "001", "nombre_producto": "Karategui", "precio_producto": 499.99, "stock_producto": 100}'
+              variant="filled"
+              fullWidth
+            />
+            <IconButton
+              type='submit'
+              color="primary"
+              aria-label="Añadir Producto"
+              size="large"
+              sx={{ marginTop: 2 }}
+            >
+              <AddCircleRoundedIcon fontSize="inherit" />
+            </IconButton>
+          </Paper>
+        </form>
 
         {/* Tarjeta Crear Cliente */}
+        <form onSubmit={handleSubmitCreateClient} method="post">
         <Paper
           elevation={3}
           sx={{
@@ -183,6 +267,7 @@ function Dashboard() {
             fullWidth
           />
           <IconButton
+            type='submit'
             color="primary"
             aria-label="Añadir Cliente"
             size="large"
@@ -191,6 +276,7 @@ function Dashboard() {
             <AddCircleRoundedIcon fontSize="inherit" />
           </IconButton>
         </Paper>
+        </form>
       </Box>
 
       {/* Gráfico Pie */}
@@ -235,7 +321,7 @@ function Dashboard() {
       <Typography variant="h5" sx={{ marginTop: 4, fontWeight: 'bold' }}>
         Productos
       </Typography>
-      <TableContainer component={Paper} sx={{ marginTop: 2, width: '90%' }}>
+      <TableContainer id="1" component={Paper} sx={{ marginTop: 2, width: '90%' }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -247,22 +333,28 @@ function Dashboard() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {productRows.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell>{row.id}</TableCell>
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.price}</TableCell>
-                <TableCell>{row.stock}</TableCell>
-                <TableCell>
-                  <Button
-                    color="error"
-                    size="small"
-                  >
-                    Eliminar
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {productRows.length !== 0 &&
+
+            productRows.map((row) => (
+                        <TableRow key={row.id_producto}>
+                          <TableCell>{row.id_producto}</TableCell>
+                          <TableCell>{row.nombre_producto}</TableCell>
+                          <TableCell>{row.precio_producto}</TableCell>
+                          <TableCell>{row.stock_producto}</TableCell>
+                          <TableCell>
+                            <Button
+                              color="error"
+                              size="small"
+                            >
+                              Eliminar
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))
+
+            
+            }
+            
           </TableBody>
         </Table>
       </TableContainer>
@@ -271,7 +363,7 @@ function Dashboard() {
       <Typography variant="h5" sx={{ marginTop: 4, fontWeight: 'bold' }}>
         Clientes
       </Typography>
-      <TableContainer component={Paper} sx={{ marginTop: 2, width: '90%' }}>
+      <TableContainer id="2" component={Paper} sx={{ marginTop: 2, width: '90%' }}>
         <Table>
           <TableHead>
             <TableRow>
