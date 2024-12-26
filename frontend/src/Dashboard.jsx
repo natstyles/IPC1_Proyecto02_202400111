@@ -83,8 +83,6 @@ const barData = {
   ],
 };
 
-
-
 // Datos para la tabla de clientes
 const clientRows = [];
 
@@ -93,9 +91,11 @@ function Dashboard() {
   // Datos para la tabla de productos
   const[productRows, setProductRows] = React.useState([]); 
 
+  //Datos para la tabla clientes
+  const[clientRows, setClientRows] = React.useState([]);
+
   //FUNCIÓN PARA LLAMAR DATOS DE LA TABLA DE PRODUCTOS
   function callProducts(){
-    //LLAMAR A LOS PRODUCTOS PARA MOSTRARLOS EN LA TABLA
     fetch('http://localhost:3000/getProducts', {
       method: 'GET',
       headers: {
@@ -106,13 +106,27 @@ function Dashboard() {
     .then(data => {
       console.log('GETPRODUCS:', data);
       setProductRows(data);
-
-      
     })
-    console.log('Productossss', productRows);
   }
 
-  //MOSTRANDO EN CONSOLA LOS VALORES QUE TIENE EL FORM DE PRODUCTOS
+  //FUNCIÓN PARA LLAMAR DATOS DE LA TABLA DE CLIENTES
+  function callClients(){
+    fetch('http://localhost:3000/getUsers', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('GETCLIENTS:', data);
+      setClientRows(data);
+
+      console.log(clientRows);
+    })
+  }  
+
+  //INGRESANDO VALORES DEL FORM DE PRODUCTOS
   const handleSubmitCreateProduct = (e) => {
     e.preventDefault();
     try{
@@ -133,19 +147,13 @@ function Dashboard() {
       })
       .catch((error) => {
         console.error('Error:', error);
-      });
-
-      //LLAMANDO A LOS PRODUCTOS PARA MOSTRARLOS EN LA TABKLA
-      callProducts();
-
-      
-
+      });      
     }catch(e){
       console.log(e);
     } 
   }
 
-  //MOSTRANDO EN CONSLA LOS VALOES QUE TIENE EL FORM DE CLIENTES
+  //INGRESANDO VALORES DEL FORM DE CLIENTES
   const handleSubmitCreateClient = (e) => {
     e.preventDefault();
     try{
@@ -172,9 +180,41 @@ function Dashboard() {
       console.log(e);
     } 
   }
-  
+
+  //FUNCIÓN PARA ELIMINAR PRODUCTOS
+  const HandleDeleteProduct = (e) => {
+    e.preventDefault();
+    try{
+      const data = {"id_producto": e.target.value};
+
+
+      //FETCH PARA ELIMINAR PRODUCTOS EN http://localhost:3000/deleteProduct
+      fetch('http://localhost:3000/deleteProduct', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('BARRITA ELIMINADA:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    }catch(e){
+      console.log(e);
+    }
+  }
   
   return (
+    //RENDER CUANDO SE HAGA ALGUN CAMBIO EN LA PAGINA (ACTUALIZAR)
+    React.useEffect(() => {
+      callProducts();
+      callClients();
+    },[productRows, clientRows]),
+
     <Box
       sx={{
         display: 'flex',
@@ -334,25 +374,24 @@ function Dashboard() {
           </TableHead>
           <TableBody>
             {productRows.length !== 0 &&
-
-            productRows.map((row) => (
-                        <TableRow key={row.id_producto}>
-                          <TableCell>{row.id_producto}</TableCell>
-                          <TableCell>{row.nombre_producto}</TableCell>
-                          <TableCell>{row.precio_producto}</TableCell>
-                          <TableCell>{row.stock_producto}</TableCell>
-                          <TableCell>
-                            <Button
-                              color="error"
-                              size="small"
-                            >
-                              Eliminar
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))
-
-            
+              productRows.map((row) => (
+                <TableRow key={row.id_producto}>
+                  <TableCell>{row.id_producto}</TableCell>
+                  <TableCell>{row.nombre_producto}</TableCell>
+                  <TableCell>{row.precio_producto}</TableCell>
+                  <TableCell>{row.stock_producto}</TableCell>
+                  <TableCell>
+                    <Button
+                      color="error"
+                      size="small"
+                      value = {row.id_producto}
+                      onClick={HandleDeleteProduct}
+                    >
+                      Eliminar
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
             }
             
           </TableBody>
@@ -375,15 +414,18 @@ function Dashboard() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {clientRows.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell>{row.id}</TableCell>
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.lastname}</TableCell>
-                <TableCell>{row.nit}</TableCell>
-                <TableCell>{row.age}</TableCell>
-              </TableRow>
-            ))}
+            {clientRows.length !== 0 &&
+              clientRows.map((row) => (
+                <TableRow key={row.id_cliente}>
+                  <TableCell>{row.id_cliente}</TableCell>
+                  <TableCell>{row.nombre}</TableCell>
+                  <TableCell>{row.apellido}</TableCell>
+                  <TableCell>{row.nit}</TableCell>
+                  <TableCell>{row.edad}</TableCell>
+                </TableRow>
+              ))
+            }
+            
           </TableBody>
         </Table>
       </TableContainer>

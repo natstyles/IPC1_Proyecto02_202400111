@@ -45,10 +45,10 @@ exports.getProducts = (req, res) => {
 //FUNCION PARA BORRAR PRODUCTOS
 //ID DE PRODUCTO A BORRAR
 exports.deleteProduct = (req, res) => {
-    const idDelete = "02";
+    const{id_producto} = req.body;
 
     //BORRAMOS EL PRODUCTO CON EL ID ESPECIFICO
-    products = products.filter(product => product.id_producto !== idDelete);
+    products = products.filter(product => product.id_producto !== id_producto);
 
     res.status(200).json({ message: 'Producto eliminado' });
     console.log(products);
