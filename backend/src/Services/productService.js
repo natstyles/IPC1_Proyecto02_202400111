@@ -53,5 +53,3 @@ exports.deleteProduct = (req, res) => {
     res.status(200).json({ message: 'Producto eliminado' });
     console.log(products);
 }
-
-
