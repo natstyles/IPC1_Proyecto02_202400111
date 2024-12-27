@@ -7,9 +7,9 @@ exports.login = (req, res) => {
     console.log(user, pass)
 
     if(user === 'skibidi' && pass === 'toilet'){
-        res.status(200).json({ message: 'Acceso correcto' });
+        res.status(200).json({ status: 200, message: 'Acceso correcto' });
     }else{
-        res.status(401).json({ message: 'Acceso incorrecto' });
+        res.status(401).json({ status: 401,message: 'Acceso incorrecto' });
     }
 
 };

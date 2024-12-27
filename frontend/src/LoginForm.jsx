@@ -42,6 +42,11 @@ function LoginForm() {
     })
     .then(response => response.json())
     .then(data => {
+      if(data.status === 200){
+        alert('Acceso correcto');
+      }else{
+        alert('Acceso incorrecto');
+      }
       console.log('Success:', data);
     })
     .catch((error) => {
