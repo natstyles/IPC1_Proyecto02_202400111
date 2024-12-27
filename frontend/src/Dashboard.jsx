@@ -15,13 +15,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
-function Dashboard() {
+//FUNCION PARA LLAMAR TODO AL MOMENTO DE LOGEARSE
+function Dashboard({ onLogout }) {
+  const [productRows, setProductRows] = React.useState([]);
+  const [clientRows, setClientRows] = React.useState([]);
 
-  // Datos para la tabla de productos
-  const[productRows, setProductRows] = React.useState([]); 
-
-  //Datos para la tabla clientes
-  const[clientRows, setClientRows] = React.useState([]);
+  React.useEffect(() => {
+    callProducts();
+    callClients();
+  }, []);
 
   //FUNCIÓN PARA LLAMAR DATOS DE LA TABLA DE PRODUCTOS
   function callProducts(){
@@ -231,7 +233,7 @@ function Dashboard() {
           </Typography>
           <TextField
             id="filled-multiline-static"
-            label="Multiline"
+            label="Clientes en formato JSON"
             multiline
             rows={6}
             defaultValue='{"id_cliente": "001", "nombre": "Sty", "apellido": "Less", "nit": "C/F", "edad": 18}'
@@ -329,6 +331,19 @@ function Dashboard() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Botón para cerrar sesión */}
+      <Button
+        variant="contained"
+        color="error"
+        onClick={onLogout}
+        sx={{
+          paddingX: 4, // Espaciado horizontal dentro del botón
+          paddingY: 1  // Espaciado vertical dentro del botón
+        }}
+      >
+        Cerrar Sesión
+      </Button>
     </Box>
   );
 }

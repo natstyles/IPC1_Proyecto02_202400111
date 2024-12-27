@@ -11,7 +11,7 @@ import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-function LoginForm() {
+function LoginForm({ onLoginSuccess }) {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -20,41 +20,34 @@ function LoginForm() {
     event.preventDefault();
   };
 
-  const handleMouseUpPassword = (event) => {
-    event.preventDefault();
-  };
-
-  const handleSubmit =  (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     const user = event.target[0].value;
     const password = event.target[1].value;
 
-    const data = {user, pass:password};
-    console.log(data);
+    const data = { user, pass: password };
 
     fetch('http://localhost:3000/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
     })
-    .then(response => response.json())
-    .then(data => {
-      if(data.status === 200){
-        alert('Acceso correcto');
-      }else{
-        alert('Acceso incorrecto');
-      }
-      console.log('Success:', data);
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-
-    
-  }
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === 200) {
+          alert('Acceso correcto');
+          onLoginSuccess(); // Notificar a App que el login fue exitoso
+        } else {
+          alert('Acceso incorrecto');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
 
   return (
     <Box
@@ -73,56 +66,47 @@ function LoginForm() {
         backgroundColor: '#f9fafc',
       }}
     >
-      {/* Título */}
       <h2 style={{ textAlign: 'center', marginBottom: '16px' }}>
         Cobra Kai Dojo - Inicio de Sesión
       </h2>
 
-    <form onSubmit={handleSubmit}>
-          {/* Nombre de usuario */}
-      <Box sx={{ display: 'flex', alignItems: 'flex-end', width: '100%' }}>
-        <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-        <TextField
-          fullWidth
-          id="input-with-sx"
-          label="Nombre de usuario"
-          variant="standard"
-        />
-      </Box>
+      <form onSubmit={handleSubmit}>
+        <Box sx={{ display: 'flex', alignItems: 'flex-end', width: '100%' }}>
+          <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+          <TextField
+            fullWidth
+            label="Nombre de usuario"
+            variant="standard"
+          />
+        </Box>
 
-      {/* Contraseña */}
-      <FormControl sx={{ width: '100%' }} variant="standard">
-        <InputLabel htmlFor="standard-adornment-password">Contraseña</InputLabel>
-        <Input
-          id="standard-adornment-password"
-          type={showPassword ? 'text' : 'password'}
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                aria-label={
-                  showPassword ? 'hide the password' : 'display the password'
-                }
-                onClick={handleClickShowPassword}
-                onMouseDown={handleMouseDownPassword}
-                onMouseUp={handleMouseUpPassword}
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
-          }
-        />
-      </FormControl>
+        <FormControl sx={{ width: '100%' }} variant="standard">
+          <InputLabel htmlFor="standard-adornment-password">Contraseña</InputLabel>
+          <Input
+            id="standard-adornment-password"
+            type={showPassword ? 'text' : 'password'}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+        </FormControl>
 
-      {/* Botón de inicio de sesión */}
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        sx={{ width: '100%', marginTop: 2 }}
-      >
-        Iniciar Sesión
-      </Button>
-    </form>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          sx={{ width: '100%', marginTop: 2 }}
+        >
+          Iniciar Sesión
+        </Button>
+      </form>
     </Box>
   );
 }
